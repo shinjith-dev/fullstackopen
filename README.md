@@ -1,2 +1,2 @@
 # fullstackopen
-Repository containing solutions of [fullstackopen.com](https://fullstackopen.com)
+Repository with submissions of fullstackopen
