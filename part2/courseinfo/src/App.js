@@ -18,6 +18,11 @@ const App = () => {
         exercises: 14,
         id: 3,
       },
+      {
+        name: "The useState() in detail",
+        exercises: 4,
+        id: 4,
+      },
     ],
   };
 
@@ -29,6 +34,7 @@ const Course = ({ course }) => {
     <div>
       <Header course={course.name} />
       <Content parts={course.parts} />
+      <Total course={course} />
     </div>
   );
 };
@@ -43,6 +49,11 @@ const Content = ({ parts }) => {
       ))}
     </div>
   );
+};
+
+const Total = ({ course }) => {
+  const total = course.parts.reduce((prev, curr) => prev + curr.exercises, 0);
+  return <h4>total of {total} exercises</h4>;
 };
 
 const Part = ({ part }) => {
