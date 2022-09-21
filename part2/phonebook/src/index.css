@@ -1,6 +1,16 @@
-.notification {
+.message {
   color: green;
   border: 3px solid green;
+  background-color: lightgrey;
+  font-size: 20px;
+  border-radius: 5px;
+  padding: 10px;
+  margin-bottom: 10px;
+}
+
+.error {
+  color: red;
+  border: 3px solid red;
   background-color: lightgrey;
   font-size: 20px;
   border-radius: 5px;

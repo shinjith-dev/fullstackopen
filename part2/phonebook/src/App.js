@@ -29,7 +29,7 @@ const App = () => {
         setPersons(persons.concat(data));
         setNewName("");
         setNewNumber("");
-        setNotifiacation(`Added ${newPerson.name}`);
+        setNotifiacation({ value: `Added ${newPerson.name}`, type: "message" });
         window.setTimeout(() => {
           setNotifiacation(null);
         }, 5000);
@@ -51,7 +51,10 @@ const App = () => {
             );
             setNewName("");
             setNewNumber("");
-            setNotifiacation(`Updated ${newPerson.name}`);
+            setNotifiacation({
+              value: `Updated ${newPerson.name}`,
+              type: "message",
+            });
             window.setTimeout(() => {
               setNotifiacation(null);
             }, 5000);
@@ -78,11 +81,31 @@ const App = () => {
         `Delete ${persons.find((person) => person.id === id).name} ?`
       )
     )
-      personServices.remove(id).then((data) => {
-        setPersons(persons.filter((person) => person.id !== id));
-        setNewName("");
-        setNewNumber("");
-      });
+      personServices
+        .remove(id)
+        .then((data) => {
+          setPersons(persons.filter((person) => person.id !== id));
+          setNewName("");
+          setNewNumber("");
+          setNotifiacation({
+            value: `removed ${persons.find((person) => person.id === id).name}`,
+            type: "error",
+          });
+          window.setTimeout(() => {
+            setNotifiacation(null);
+          }, 5000);
+        })
+        .catch((e) => {
+          setNotifiacation({
+            value: `${
+              persons.find((person) => person.id === id).name
+            } has already been removed from server`,
+            type: "error",
+          });
+          window.setTimeout(() => {
+            setNotifiacation(null);
+          }, 5000);
+        });
   };
 
   var filtered = persons
