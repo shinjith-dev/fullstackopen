@@ -1,9 +1,11 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
+import Country from "./components/Country";
 
 function App() {
   const [filter, setFilter] = useState("");
   const [countries, setCountries] = useState([]);
+  const [selected, setSelected] = useState({ selected: false, country: {} });
 
   var countriesToShow = [];
 
@@ -13,7 +15,10 @@ function App() {
     });
   }, []);
 
-  const handleSearchChange = (e) => setFilter(e.target.value);
+  const handleSearchChange = (e) => {
+    setFilter(e.target.value);
+    setSelected({ selected: false, country: {} });
+  };
 
   countriesToShow = countries.filter(
     (country) =>
@@ -21,37 +26,31 @@ function App() {
       filter.length !== 0
   );
 
+  const handleCountryClick = (country) => {
+    setSelected({ selected: true, country: country });
+  };
+
   return (
     <>
       <div>
         Find countries: <input value={filter} onChange={handleSearchChange} />
       </div>
       <div>
-        {countriesToShow.length > 10 ? (
-          <p>Too many matches specify one more letter</p>
-        ) : countriesToShow.length === 1 ? (
-          <>
-            <h2>{countriesToShow[0].name.common}</h2>
-            <p>
-              capital:{" "}
-              {countriesToShow[0].capital.map((capital) => capital + " ")}
-            </p>
-            <p>area: {countriesToShow[0].area}</p>
-            <h4>languages:</h4>
-            <ul>
-              {Object.values(countriesToShow[0].languages).map((lang) => (
-                <li key={lang}>{lang}</li>
-              ))}
-            </ul>
-            <img
-              src={countriesToShow[0].flags.png}
-              alt={`${countriesToShow[0].name.common}-flag`}
-            />
-          </>
+        {!selected.selected ? (
+          countriesToShow.length > 10 ? (
+            <p>Too many matches specify one more letter</p>
+          ) : (
+            countriesToShow.map((country) => (
+              <p key={country.name.official}>
+                {country.name.common + " "}
+                <button onClick={() => handleCountryClick(country)}>
+                  show
+                </button>
+              </p>
+            ))
+          )
         ) : (
-          countriesToShow.map((country) => (
-            <p key={country.name.official}>{country.name.common}</p>
-          ))
+          <Country country={selected.country} />
         )}
       </div>
     </>
