@@ -17,21 +17,36 @@ const App = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const newNote = {
+    const newPerson = {
       name: newName,
       number: newNumber,
       id: persons[persons.length - 1].id + 1,
     };
-    if (!persons.some((person) => person.name === newNote.name)) {
-      personServices.create(newNote).then((data) => {
+    if (!persons.some((person) => person.name === newPerson.name)) {
+      personServices.create(newPerson).then((data) => {
         setPersons(persons.concat(data));
         setNewName("");
         setNewNumber("");
       });
     } else {
-      alert(`${newName} is already added to phonebook`);
-      setNewName("");
-      setNewNumber("");
+      if (
+        window.confirm(
+          `${newPerson.name} is already added to phonebook, replace old number with new one?`
+        )
+      )
+        personServices
+          .update(
+            persons.find((person) => person.name === newPerson.name).id,
+            newPerson
+          )
+          .then((data) => {
+            setPersons(
+              persons.map((person) => (person.id !== data.id ? person : data))
+            );
+            setNewName("");
+            setNewNumber("");
+          });
+      console.log(persons.find((person) => person.name === newPerson.name).id);
     }
   };
 
