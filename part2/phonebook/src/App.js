@@ -18,9 +18,9 @@ const App = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     const newNote = {
-      id: persons.length + 1,
       name: newName,
       number: newNumber,
+      id: persons[persons.length - 1].id + 1,
     };
     if (!persons.some((person) => person.name === newNote.name)) {
       personServices.create(newNote).then((data) => {
@@ -47,6 +47,19 @@ const App = () => {
     setNewNumber(e.target.value);
   };
 
+  const handlePersonDelete = (id) => {
+    if (
+      window.confirm(
+        `Delete ${persons.find((person) => person.id === id).name} ?`
+      )
+    )
+      personServices.remove(id).then((data) => {
+        setPersons(persons.filter((person) => person.id !== id));
+        setNewName("");
+        setNewNumber("");
+      });
+  };
+
   var filtered = persons
     .slice()
     .filter((person) =>
@@ -66,7 +79,7 @@ const App = () => {
         handleNumberChange={handleNumberChange}
       />
       <h2>Numbers</h2>
-      <Persons filtered={filtered} />
+      <Persons filtered={filtered} handleDelete={handlePersonDelete} />
     </div>
   );
 };
