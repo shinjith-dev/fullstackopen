@@ -1,6 +1,7 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import Filter from "./components/Filter";
+import Notification from "./components/Notification";
 import PersonForm from "./components/PersonForm";
 import Persons from "./components/Persons";
 import personServices from "./services/persons";
@@ -10,6 +11,7 @@ const App = () => {
   const [newName, setNewName] = useState("");
   const [newNumber, setNewNumber] = useState("");
   const [filter, setFilter] = useState("");
+  const [notification, setNotifiacation] = useState(null);
 
   useEffect(() => {
     personServices.getAll().then((data) => setPersons(data));
@@ -27,6 +29,10 @@ const App = () => {
         setPersons(persons.concat(data));
         setNewName("");
         setNewNumber("");
+        setNotifiacation(`Added ${newPerson.name}`);
+        window.setTimeout(() => {
+          setNotifiacation(null);
+        }, 5000);
       });
     } else {
       if (
@@ -45,6 +51,10 @@ const App = () => {
             );
             setNewName("");
             setNewNumber("");
+            setNotifiacation(`Updated ${newPerson.name}`);
+            window.setTimeout(() => {
+              setNotifiacation(null);
+            }, 5000);
           });
       console.log(persons.find((person) => person.name === newPerson.name).id);
     }
@@ -84,6 +94,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification message={notification} />
       <Filter filter={filter} handleFilterChange={handleFilterChange} />
       <h2>add a new</h2>
       <PersonForm
