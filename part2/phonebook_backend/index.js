@@ -1,4 +1,6 @@
 const express = require("express");
+const morgan = require("morgan");
+const { ppid } = require("process");
 const app = express();
 const PORT = 3001;
 
@@ -31,6 +33,33 @@ app.use(function (req, res, next) {
   req.start = new Date(Date.now());
   next();
 });
+
+// app.use((req, res, next) => {
+//   console.log(`request method: ${req.method}`);
+//   console.log(`request path: ${req.path}`);
+//   console.log(`request body: ${req.body}`);
+//   console.log("<---->");
+//   next();
+// });
+
+morgan.token("jsonbody", (req, res) => {
+  return req.method === "POST" ? JSON.stringify(req.body) : "";
+});
+
+app.use(
+  morgan((tokens, req, res) => {
+    return [
+      tokens.method(req, res),
+      tokens.url(req, res),
+      tokens.status(req, res),
+      tokens.res(req, res, "content-length"),
+      "-",
+      tokens["response-time"](req, res),
+      "ms",
+      tokens.jsonbody(req, res),
+    ].join(" ");
+  })
+);
 
 app.get("/info", (req, res) => {
   res.set("content-type", "text/html");
@@ -87,7 +116,6 @@ app.post("/api/persons", (req, res) => {
   };
 
   persons = persons.concat(person);
-  console.log(person);
   res.json(person);
 });
 
