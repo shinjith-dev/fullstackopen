@@ -25,12 +25,14 @@ const persons = [
   },
 ];
 
+app.use(express.json());
+
 app.use(function (req, res, next) {
   req.start = new Date(Date.now());
   next();
 });
 
-app.get("/api/info", (req, res) => {
+app.get("/info", (req, res) => {
   res.set("content-type", "text/html");
   res.send(
     `<p>Phonebook has info of ${persons.length} people</p><p>${req.start}</p>`
@@ -39,6 +41,11 @@ app.get("/api/info", (req, res) => {
 
 app.get("/api/persons", (req, res) => {
   res.json(persons);
+});
+
+app.get("/api/persons/:id", (req, res) => {
+  const person = persons.find((person) => person.id === Number(req.params.id));
+  person ? res.json(person) : res.status(404).end();
 });
 
 app.listen(PORT, () => console.log(`sever started on port ${PORT}`));
