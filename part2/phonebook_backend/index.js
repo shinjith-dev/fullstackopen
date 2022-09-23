@@ -54,4 +54,32 @@ app.delete("/api/persons/:id", (req, res) => {
   res.status(204).end();
 });
 
+const generateId = () => {
+  let randomId = 0;
+  do {
+    randomId = Math.floor(Math.random() * 1000);
+  } while (persons.find((person) => person.id === randomId) !== undefined);
+  return randomId;
+};
+
+app.post("/api/persons", (req, res) => {
+  const body = req.body;
+
+  if (!body.name) {
+    return res.status(400).json({
+      error: "content missing",
+    });
+  }
+
+  const person = {
+    id: generateId(),
+    name: body.name,
+    number: body.number,
+  };
+
+  persons = persons.concat(person);
+  console.log(person);
+  res.json(person);
+});
+
 app.listen(PORT, () => console.log(`sever started on port ${PORT}`));
