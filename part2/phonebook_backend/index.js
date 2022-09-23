@@ -67,9 +67,18 @@ app.post("/api/persons", (req, res) => {
 
   if (!body.name) {
     return res.status(400).json({
-      error: "content missing",
+      error: "name is missing",
+    });
+  } else if (!body.number) {
+    return res.status(400).json({
+      error: "number is missing",
     });
   }
+
+  if (persons.filter((person) => person.name === body.name).length !== 0)
+    return res.status(400).json({
+      error: "name must be unique",
+    });
 
   const person = {
     id: generateId(),
