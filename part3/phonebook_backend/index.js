@@ -1,7 +1,7 @@
 const express = require("express");
 const morgan = require("morgan");
-const { ppid } = require("process");
 const app = express();
+const cors = require("cors");
 const PORT = 3001;
 
 var persons = [
@@ -34,13 +34,7 @@ app.use(function (req, res, next) {
   next();
 });
 
-// app.use((req, res, next) => {
-//   console.log(`request method: ${req.method}`);
-//   console.log(`request path: ${req.path}`);
-//   console.log(`request body: ${req.body}`);
-//   console.log("<---->");
-//   next();
-// });
+app.use(cors());
 
 morgan.token("jsonbody", (req, res) => {
   return req.method === "POST" ? JSON.stringify(req.body) : "";
@@ -120,3 +114,5 @@ app.post("/api/persons", (req, res) => {
 });
 
 app.listen(PORT, () => console.log(`sever started on port ${PORT}`));
+
+module.exports = app;

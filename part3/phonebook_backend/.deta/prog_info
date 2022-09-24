@@ -1,0 +1,1 @@
+{"id":"06110107-2692-4c35-9fc0-445947adc2f1","space":33147,"runtime":"nodejs14.x","name":"phonebook_backend","path":"yvd9dk","project":"d0m7o34y","account":"144798365827","region":"ap-south-1","deps":["express@^4.18.1","morgan@^1.10.0","cors@^2.8.5"],"envs":null,"public":true,"log_level":"off","cron":""}
