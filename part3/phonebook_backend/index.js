@@ -2,7 +2,7 @@ const express = require("express");
 const morgan = require("morgan");
 const app = express();
 const cors = require("cors");
-const PORT = 3001;
+const PORT = process.env.PORT || 3001;
 
 var persons = [
   {
@@ -26,6 +26,8 @@ var persons = [
     number: "39-23-6423122",
   },
 ];
+
+app.use(express.static('build'));
 
 app.use(express.json());
 

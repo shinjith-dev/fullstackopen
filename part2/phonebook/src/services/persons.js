@@ -1,5 +1,5 @@
 import axios from "axios";
-const baseUrl = "https://yvd9dk.deta.dev/api/persons";
+const baseUrl = "/api/persons";
 
 const getAll = () => {
   const req = axios.get(baseUrl);
