@@ -3,7 +3,7 @@ const morgan = require("morgan");
 const app = express();
 const cors = require("cors");
 require("dotenv").config();
-const Person = require("./mongo");
+const Person = require("./models/person");
 const PORT = process.env.PORT;
 
 app.use(express.static("build"));
@@ -36,14 +36,14 @@ app.use(
   })
 );
 
+var people = [];
+
 app.get("/info", (req, res) => {
   res.set("content-type", "text/html");
   res.send(
-    `<p>Phonebook has info of ${persons.length} people</p><p>${req.start}</p>`
+    `<p>Phonebook has info of ${people.length} people</p><p>${req.start}</p>`
   );
 });
-
-var people;
 
 app.get("/api/persons", (req, res) => {
   Person.find({}).then((val) => {
@@ -53,23 +53,16 @@ app.get("/api/persons", (req, res) => {
 });
 
 app.get("/api/persons/:id", (req, res) => {
-  const person = persons.find((person) => person.id === Number(req.params.id));
-  person ? res.json(person) : res.status(404).end();
+  Person.findById(req.params.id)
+    .then((person) => res.json(person))
+    .catch((err) => res.status(404).end());
 });
 
 app.delete("/api/persons/:id", (req, res) => {
-  const id = Number(req.params.id);
-  persons = persons.filter((person) => person.id !== id);
-  res.status(204).end();
+  Person.findByIdAndDelete(req.params.id).then((deleted) =>
+    res.status(204).end()
+  );
 });
-
-// const generateId = () => {
-//   let randomId = 0;
-//   do {
-//     randomId = Math.floor(Math.random() * 1000);
-//   } while (persons.find((person) => person.id === randomId) !== undefined);
-//   return randomId;
-// };
 
 app.post("/api/persons", (req, res) => {
   const body = req.body;
@@ -84,19 +77,12 @@ app.post("/api/persons", (req, res) => {
     });
   }
 
-  if (persons.filter((person) => person.name === body.name).length !== 0)
-    return res.status(400).json({
-      error: "name must be unique",
-    });
-
-  const person = {
-    id: generateId(),
+  const person = new Person({
     name: body.name,
     number: body.number,
-  };
+  });
 
-  persons = persons.concat(person);
-  res.json(person);
+  person.save().then((addedPesron) => res.json(addedPesron));
 });
 
 app.listen(PORT, () => console.log(`sever started on port ${PORT}`));
