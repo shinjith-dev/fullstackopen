@@ -107,11 +107,14 @@ const App = () => {
         });
   };
 
-  var filtered = persons
-    .slice()
-    .filter((person) =>
-      person.name.toLowerCase().includes(filter.toLowerCase())
-    );
+  var filtered =
+    persons.length > 0
+      ? persons
+          .slice()
+          .filter((person) =>
+            person.name.toLowerCase().includes(filter.toLowerCase())
+          )
+      : [];
 
   return (
     <div>
