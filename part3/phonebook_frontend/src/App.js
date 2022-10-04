@@ -21,7 +21,6 @@ const App = () => {
     const newPerson = {
       name: newName,
       number: newNumber,
-      id: persons[persons.length - 1].id + 1,
     };
     if (!persons.some((person) => person.name === newPerson.name)) {
       personServices.create(newPerson).then((data) => {
@@ -58,7 +57,6 @@ const App = () => {
               setNotifiacation(null);
             }, 5000);
           });
-      console.log(persons.find((person) => person.name === newPerson.name).id);
     }
   };
 

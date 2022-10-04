@@ -17,6 +17,8 @@ app.use(function (req, res, next) {
 
 app.use(cors());
 
+app.use(express.static("build"));
+
 morgan.token("jsonbody", (req, res) => {
   return req.method === "POST" ? JSON.stringify(req.body) : "";
 });
@@ -45,26 +47,28 @@ app.get("/info", (req, res) => {
   );
 });
 
-app.get("/api/persons", (req, res) => {
-  Person.find({}).then((val) => {
-    res.json(val);
-    people = val;
-  });
+app.get("/api/persons", (req, res, next) => {
+  Person.find({})
+    .then((val) => {
+      res.json(val);
+      people = val;
+    })
+    .catch((err) => next(err));
 });
 
-app.get("/api/persons/:id", (req, res) => {
+app.get("/api/persons/:id", (req, res, next) => {
   Person.findById(req.params.id)
     .then((person) => res.json(person))
-    .catch((err) => res.status(404).end());
+    .catch((err) => next(err));
 });
 
-app.delete("/api/persons/:id", (req, res) => {
-  Person.findByIdAndDelete(req.params.id).then((deleted) =>
-    res.status(204).end()
-  );
+app.delete("/api/persons/:id", (req, res, next) => {
+  Person.findByIdAndRemove(req.params.id)
+    .then((deleted) => res.status(204).end())
+    .catch((err) => next(err));
 });
 
-app.post("/api/persons", (req, res) => {
+app.post("/api/persons", (req, res, next) => {
   const body = req.body;
 
   if (!body.name) {
@@ -82,8 +86,39 @@ app.post("/api/persons", (req, res) => {
     number: body.number,
   });
 
-  person.save().then((addedPesron) => res.json(addedPesron));
+  person
+    .save()
+    .then((addedPesron) => res.json(addedPesron))
+    .catch((err) => next(err));
 });
+
+app.put("/api/persons/:id", (req, res, next) => {
+  const body = req.body;
+  const person = {
+    name: body.name,
+    number: body.number,
+  };
+  Person.findByIdAndUpdate(req.params.id, person, { new: true })
+    .then((updatedPerson) => res.json(updatedPerson))
+    .catch((err) => next(err));
+});
+
+const unknownEndpoint = (request, response) => {
+  response.status(404).send({ error: "unknown endpoint" });
+};
+
+app.use(unknownEndpoint);
+
+const errorHandler = (error, request, response, next) => {
+  console.error(error.message);
+
+  if (error.name === "CastError") {
+    return response.status(400).send({ error: "malformatted id" });
+  }
+  next(error);
+};
+
+app.use(errorHandler);
 
 app.listen(PORT, () => console.log(`sever started on port ${PORT}`));
 
