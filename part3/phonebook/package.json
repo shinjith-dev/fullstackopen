@@ -6,11 +6,13 @@
   "scripts": {
     "start": "node index.js",
     "dev": "nodemon",
+    "lint": "eslint .",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "shinjith-dev",
   "license": "MIT",
   "devDependencies": {
+    "eslint": "^8.24.0",
     "nodemon": "^2.0.20"
   },
   "dependencies": {
