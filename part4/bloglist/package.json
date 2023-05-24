@@ -13,7 +13,9 @@
   "license": "ISC",
   "dependencies": {
     "cors": "^2.8.5",
+    "dotenv": "^16.0.3",
     "express": "^4.18.2",
+    "lodash": "^4.17.21",
     "mongoose": "^6.6.5"
   },
   "devDependencies": {
@@ -23,6 +25,6 @@
     "prettier": "^2.8.0"
   },
   "jest": {
-   "testEnvironment": "node"
- }
+    "testEnvironment": "node"
+  }
 }
